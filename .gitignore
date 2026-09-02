@@ -1,0 +1,7 @@
+node_modules/
+dist/
+*.log
+
+# Local preview evidence and reference captures
+qa-*.png
+reference-mockup.jpg
