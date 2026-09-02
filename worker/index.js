@@ -93,6 +93,9 @@ function rowToAssignee(row) {
 }
 
 async function seedDatabase(db) {
+  const existingStaff = await db.prepare("SELECT COUNT(*) AS count FROM staff_users").first();
+  if (Number(existingStaff?.count || 0) > 0) return;
+
   const timestamp = now();
   const passwordHash = await digest("admin");
   const statements = [
