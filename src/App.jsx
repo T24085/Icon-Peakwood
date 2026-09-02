@@ -159,7 +159,8 @@ const portalSeedRequests = [
 function loadPortalRequests() {
   try {
     const saved = window.localStorage.getItem(portalStorageKey);
-    return saved ? JSON.parse(saved) : portalSeedRequests;
+    const parsed = saved ? JSON.parse(saved) : null;
+    return Array.isArray(parsed) ? parsed : portalSeedRequests;
   } catch {
     return portalSeedRequests;
   }
@@ -168,7 +169,8 @@ function loadPortalRequests() {
 function loadPortalAssignees() {
   try {
     const saved = window.localStorage.getItem(portalAssigneeStorageKey);
-    return saved ? JSON.parse(saved).map((assignee) => {
+    const parsed = saved ? JSON.parse(saved) : null;
+    return Array.isArray(parsed) ? parsed.map((assignee) => {
       const seed = portalSeedAssignees.find((item) => item.id === assignee.id);
       return { ...seed, ...assignee, phone: assignee.phone || seed?.phone || "", email: assignee.email || seed?.email || "" };
     }) : portalSeedAssignees;
@@ -193,10 +195,15 @@ async function apiJson(path, options = {}) {
     ...options,
     headers: { "content-type": "application/json", ...(options.headers || {}) },
   });
-  const payload = await response.json().catch(() => ({}));
+  const payload = await response.json().catch(() => null);
   if (!response.ok) {
-    const error = new Error(payload.error || `Request failed with status ${response.status}.`);
+    const error = new Error(payload?.error || `Request failed with status ${response.status}.`);
     error.status = response.status;
+    throw error;
+  }
+  if (payload === null) {
+    const error = new Error("The server returned the website shell instead of JSON data.");
+    error.status = 503;
     throw error;
   }
   return payload;
