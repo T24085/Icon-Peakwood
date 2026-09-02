@@ -188,10 +188,11 @@ function hasStaffSession() {
 }
 
 const isLocalPreview = ["localhost", "127.0.0.1", "terminal.local"].includes(window.location.hostname);
+const apiOrigin = (import.meta.env.VITE_API_ORIGIN || "").replace(/\/+$/, "");
 
 async function apiJson(path, options = {}) {
-  const response = await fetch(path, {
-    credentials: "same-origin",
+  const response = await fetch(`${apiOrigin}${path}`, {
+    credentials: "include",
     ...options,
     headers: { "content-type": "application/json", ...(options.headers || {}) },
   });

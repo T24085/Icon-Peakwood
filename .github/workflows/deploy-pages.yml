@@ -34,6 +34,7 @@ jobs:
         run: npm run build
         env:
           GITHUB_ACTIONS: true
+          VITE_API_ORIGIN: https://icon-peakwood.pandoratv.chatgpt.site
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

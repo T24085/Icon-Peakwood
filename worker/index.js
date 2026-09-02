@@ -23,6 +23,13 @@ const schemaStatements = [
 ];
 
 let databaseReady;
+const allowedOrigins = new Set([
+  "https://t24085.github.io",
+  "https://icon-peakwood.pandoratv.chatgpt.site",
+  "https://iconpeakwood.novatec.casa",
+  "http://localhost:4173",
+  "http://127.0.0.1:4173",
+]);
 
 function json(data, init = {}) {
   return new Response(JSON.stringify(data), {
@@ -41,8 +48,23 @@ function getCookie(request, name) {
   return entry ? decodeURIComponent(entry.slice(name.length + 1)) : "";
 }
 
-function cookieHeader(token, maxAge) {
-  return `icon_peakwood_staff=${encodeURIComponent(token)}; Max-Age=${maxAge}; Path=/; HttpOnly; SameSite=Lax; Secure`;
+function cookieHeader(token, maxAge, request) {
+  const requestUrl = new URL(request.url);
+  const origin = request.headers.get("origin");
+  const isCrossOrigin = origin && origin !== requestUrl.origin;
+  return `icon_peakwood_staff=${encodeURIComponent(token)}; Max-Age=${maxAge}; Path=/; HttpOnly; SameSite=${isCrossOrigin ? "None" : "Lax"}${requestUrl.protocol === "https:" ? "; Secure" : ""}`;
+}
+
+function withCors(response, request) {
+  const origin = request.headers.get("origin");
+  if (!origin || !allowedOrigins.has(origin)) return response;
+  const headers = new Headers(response.headers);
+  headers.set("Access-Control-Allow-Origin", origin);
+  headers.set("Access-Control-Allow-Credentials", "true");
+  headers.set("Access-Control-Allow-Headers", "content-type");
+  headers.set("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS");
+  headers.set("Vary", "Origin");
+  return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
 }
 
 async function digest(value) {
@@ -138,7 +160,7 @@ async function handleApi(request, env, url) {
     const timestamp = now();
     const expires = new Date(Date.now() + 8 * 60 * 60 * 1000).toISOString();
     await env.DB.prepare("INSERT INTO staff_sessions (token_hash, username, expires_at, created_at) VALUES (?, ?, ?, ?)").bind(await digest(token), user.username, expires, timestamp).run();
-    return json({ authenticated: true, username: user.username, displayName: user.display_name }, { headers: { "set-cookie": cookieHeader(token, 8 * 60 * 60) } });
+    return json({ authenticated: true, username: user.username, displayName: user.display_name }, { headers: { "set-cookie": cookieHeader(token, 8 * 60 * 60, request) } });
   }
 
   if (path === "/api/staff/session" && request.method === "GET") {
@@ -149,7 +171,7 @@ async function handleApi(request, env, url) {
   if (path === "/api/staff/logout" && request.method === "POST") {
     const token = getCookie(request, "icon_peakwood_staff");
     if (token) await env.DB.prepare("DELETE FROM staff_sessions WHERE token_hash = ?").bind(await digest(token)).run();
-    return json({ authenticated: false }, { headers: { "set-cookie": cookieHeader("", 0) } });
+    return json({ authenticated: false }, { headers: { "set-cookie": cookieHeader("", 0, request) } });
   }
 
   if (path === "/api/maintenance/requests" && request.method === "POST") {
@@ -220,7 +242,7 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     if (url.pathname.startsWith("/api/")) {
-      try { return await handleApi(request, env, url); } catch (error) { return json({ error: error.message || "Server error." }, { status: 500 }); }
+      try { return withCors(await handleApi(request, env, url), request); } catch (error) { return withCors(json({ error: error.message || "Server error." }, { status: 500 }), request); }
     }
 
     const response = await env.ASSETS.fetch(request);
