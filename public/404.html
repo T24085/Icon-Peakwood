@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Icon @ Peakwood</title>
+    <script>
+      const base = "/Icon-Peakwood/";
+      const currentPath = window.location.pathname;
+      const route = currentPath.startsWith(base) ? currentPath.slice(base.length) : currentPath.replace(/^\/+/, "");
+      const query = new URLSearchParams(window.location.search);
+      query.set("p", `/${route}`);
+      window.location.replace(`${base}?${query.toString()}${window.location.hash}`);
+    </script>
+  </head>
+  <body></body>
+</html>

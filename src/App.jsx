@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { FiArrowUpRight, FiBell, FiCamera, FiCheckCircle, FiClock, FiFileText, FiHome, FiMail, FiMapPin, FiMessageSquare, FiPhone, FiPlus, FiShield, FiSun, FiTool, FiTrash2, FiUpload, FiUsers } from "react-icons/fi";
 
+const baseUrl = import.meta.env.BASE_URL;
+const assetPath = (path) => `${baseUrl}${path.replace(/^\/+/, "")}`;
+const sitePath = (path = "/") => `${baseUrl}${path.replace(/^\/+/, "")}`;
+
 const siteLinks = {
   residentPortal: "https://theiconatpeakwood.loftliving.com/",
   apply: "https://9247942.onlineleasing.realpage.com/",
@@ -27,10 +31,10 @@ const featureItems = [
 const featureIcons = [FiHome, FiSun, FiMapPin, FiUsers, FiShield];
 
 const galleryItems = [
-  { src: "/assets/main-entry.jpg", label: "FLOOR PLANS", alt: "Main entry lobby at Icon Peakwood", action: "floor-plans" },
-  { src: "/assets/outside-corridor.jpg", label: "AMENITIES", alt: "Outside corridor at Icon Peakwood", action: "amenities" },
-  { src: "/assets/modern-exterior.jpg", label: "GALLERY", alt: "Modern exterior at Icon Peakwood", action: "gallery" },
-  { src: "/assets/gallery-courtyard.jpg", label: "NEIGHBORHOOD", alt: "Open courtyard at Icon Peakwood", action: "neighborhood" },
+  { src: assetPath("/assets/main-entry.jpg"), label: "FLOOR PLANS", alt: "Main entry lobby at Icon Peakwood", action: "floor-plans" },
+  { src: assetPath("/assets/outside-corridor.jpg"), label: "AMENITIES", alt: "Outside corridor at Icon Peakwood", action: "amenities" },
+  { src: assetPath("/assets/modern-exterior.jpg"), label: "GALLERY", alt: "Modern exterior at Icon Peakwood", action: "gallery" },
+  { src: assetPath("/assets/gallery-courtyard.jpg"), label: "NEIGHBORHOOD", alt: "Open courtyard at Icon Peakwood", action: "neighborhood" },
 ];
 
 const amenityGroups = [
@@ -45,18 +49,18 @@ const amenityGroups = [
 ];
 
 const galleryLibrary = [
-  { src: "/assets/hero-pool.jpg", label: "POOL & CLUBHOUSE", alt: "Resort-style pool and clubhouse at Icon Peakwood" },
-  { src: "/assets/main-entry.jpg", label: "MAIN ENTRY", alt: "Main entry lobby at Icon Peakwood" },
-  { src: "/assets/outside-corridor.jpg", label: "COURTYARD WALK", alt: "Outside corridor at Icon Peakwood" },
-  { src: "/assets/modern-exterior.jpg", label: "COMMUNITY EXTERIOR", alt: "Modern exterior at Icon Peakwood" },
-  { src: "/assets/gallery-courtyard.jpg", label: "OPEN COURTYARD", alt: "Open courtyard at Icon Peakwood" },
-  { src: "/assets/gallery-bedroom.jpg", label: "BEDROOM", alt: "Bedroom interior at Icon Peakwood" },
-  { src: "/assets/gallery-corridor.jpg", label: "INTERIOR CORRIDOR", alt: "Interior corridor at Icon Peakwood" },
-  { src: "/assets/gallery-front.png", label: "FRONT ELEVATION", alt: "Front elevation at Icon Peakwood" },
-  { src: "/assets/gallery-living-room.jpg", label: "LIVING ROOM", alt: "Living room interior at Icon Peakwood" },
-  { src: "/assets/living-room.jpg", label: "RESIDENCE LOUNGE", alt: "Residence lounge at Icon Peakwood" },
-  { src: "/assets/living-room.png", label: "LIVING SPACE", alt: "Living space at Icon Peakwood" },
-  { src: "/assets/location-building.png", label: "PEAKWOOD ADDRESS", alt: "Icon Peakwood building exterior" },
+  { src: assetPath("/assets/hero-pool.jpg"), label: "POOL & CLUBHOUSE", alt: "Resort-style pool and clubhouse at Icon Peakwood" },
+  { src: assetPath("/assets/main-entry.jpg"), label: "MAIN ENTRY", alt: "Main entry lobby at Icon Peakwood" },
+  { src: assetPath("/assets/outside-corridor.jpg"), label: "COURTYARD WALK", alt: "Outside corridor at Icon Peakwood" },
+  { src: assetPath("/assets/modern-exterior.jpg"), label: "COMMUNITY EXTERIOR", alt: "Modern exterior at Icon Peakwood" },
+  { src: assetPath("/assets/gallery-courtyard.jpg"), label: "OPEN COURTYARD", alt: "Open courtyard at Icon Peakwood" },
+  { src: assetPath("/assets/gallery-bedroom.jpg"), label: "BEDROOM", alt: "Bedroom interior at Icon Peakwood" },
+  { src: assetPath("/assets/gallery-corridor.jpg"), label: "INTERIOR CORRIDOR", alt: "Interior corridor at Icon Peakwood" },
+  { src: assetPath("/assets/gallery-front.png"), label: "FRONT ELEVATION", alt: "Front elevation at Icon Peakwood" },
+  { src: assetPath("/assets/gallery-living-room.jpg"), label: "LIVING ROOM", alt: "Living room interior at Icon Peakwood" },
+  { src: assetPath("/assets/living-room.jpg"), label: "RESIDENCE LOUNGE", alt: "Residence lounge at Icon Peakwood" },
+  { src: assetPath("/assets/living-room.png"), label: "LIVING SPACE", alt: "Living space at Icon Peakwood" },
+  { src: assetPath("/assets/location-building.png"), label: "PEAKWOOD ADDRESS", alt: "Icon Peakwood building exterior" },
 ];
 
 const maintenanceIssues = [
@@ -194,30 +198,30 @@ const floorPlanGroups = [
     key: "studio",
     label: "STUDIO",
     plans: [
-      ["UNIT S2", "/assets/floorplans/floorplan-s2.jpg"],
-      ["UNIT S3", "/assets/floorplans/floorplan-s3.jpg"],
-      ["UNIT S4", "/assets/floorplans/floorplan-s4.jpg"],
-      ["UNIT S5", "/assets/floorplans/floorplan-s5.jpg"],
-      ["UNIT S6A", "/assets/floorplans/floorplan-s6a.jpg"],
-      ["UNIT S9", "/assets/floorplans/floorplan-s9.jpg"],
+      ["UNIT S2", assetPath("/assets/floorplans/floorplan-s2.jpg")],
+      ["UNIT S3", assetPath("/assets/floorplans/floorplan-s3.jpg")],
+      ["UNIT S4", assetPath("/assets/floorplans/floorplan-s4.jpg")],
+      ["UNIT S5", assetPath("/assets/floorplans/floorplan-s5.jpg")],
+      ["UNIT S6A", assetPath("/assets/floorplans/floorplan-s6a.jpg")],
+      ["UNIT S9", assetPath("/assets/floorplans/floorplan-s9.jpg")],
     ],
   },
   {
     key: "one-bedroom",
     label: "1 BEDROOM",
     plans: [
-      ["UNIT A1", "/assets/floorplans/floorplan-a1.jpg"],
-      ["UNIT A2", "/assets/floorplans/floorplan-a2.jpg"],
-      ["UNIT A3", "/assets/floorplans/floorplan-a3.jpg"],
-      ["UNIT A4", "/assets/floorplans/floorplan-a4.jpg"],
+      ["UNIT A1", assetPath("/assets/floorplans/floorplan-a1.jpg")],
+      ["UNIT A2", assetPath("/assets/floorplans/floorplan-a2.jpg")],
+      ["UNIT A3", assetPath("/assets/floorplans/floorplan-a3.jpg")],
+      ["UNIT A4", assetPath("/assets/floorplans/floorplan-a4.jpg")],
     ],
   },
   {
     key: "two-bedroom",
     label: "2 BEDROOMS",
     plans: [
-      ["UNIT B1", "/assets/floorplans/floorplan-b1.jpg"],
-      ["UNIT B2", "/assets/floorplans/floorplan-b2.jpg"],
+      ["UNIT B1", assetPath("/assets/floorplans/floorplan-b1.jpg")],
+      ["UNIT B2", assetPath("/assets/floorplans/floorplan-b2.jpg")],
     ],
   },
 ];
@@ -284,11 +288,11 @@ function StaffLoginPage({ onAuthenticated }) {
   return (
     <div className="portal-page portal-page--login">
       <header className="portal-header">
-        <a className="portal-brand" href="/" aria-label="Back to Icon at Peakwood home">
-          <span className="portal-brand-mark"><img src="/assets/logo-mark.png" alt="Icon Peakwood" /></span>
+        <a className="portal-brand" href={sitePath()} aria-label="Back to Icon at Peakwood home">
+          <span className="portal-brand-mark"><img src={assetPath("/assets/logo-mark.png")} alt="Icon Peakwood" /></span>
           <span><strong>ICON @ PEAKWOOD</strong><small>MAINTENANCE PORTAL</small></span>
         </a>
-        <a className="portal-home-link" href="/maintenance-portal">RESIDENT PORTAL</a>
+        <a className="portal-home-link" href={sitePath("/maintenance-portal")}>RESIDENT PORTAL</a>
       </header>
       <main className="portal-login-main">
         <section className="portal-login-card" aria-labelledby="staff-login-title">
@@ -305,7 +309,7 @@ function StaffLoginPage({ onAuthenticated }) {
         </section>
         <aside className="portal-login-aside"><p className="section-kicker">KEEP THE WORK MOVING</p><h2>ONE SHARED<br /><strong>WORKFLOW.</strong></h2><p>The resident side stays open to the community. This private side is where your team can organize every request from intake through resolution.</p></aside>
       </main>
-      <footer className="portal-footer"><span>ICON @ PEAKWOOD · PRIVATE STAFF ACCESS</span><a href="/maintenance-portal">BACK TO RESIDENT PORTAL</a></footer>
+      <footer className="portal-footer"><span>ICON @ PEAKWOOD · PRIVATE STAFF ACCESS</span><a href={sitePath("/maintenance-portal")}>BACK TO RESIDENT PORTAL</a></footer>
     </div>
   );
 }
@@ -423,13 +427,13 @@ function MaintenancePortalPage({ staffRoute = false }) {
   return (
     <div className="portal-page">
       <header className="portal-header">
-        <a className="portal-brand" href="/" aria-label="Back to Icon at Peakwood home">
-          <span className="portal-brand-mark"><img src="/assets/logo-mark.png" alt="Icon Peakwood" /></span>
+        <a className="portal-brand" href={sitePath()} aria-label="Back to Icon at Peakwood home">
+          <span className="portal-brand-mark"><img src={assetPath("/assets/logo-mark.png")} alt="Icon Peakwood" /></span>
           <span><strong>ICON @ PEAKWOOD</strong><small>MAINTENANCE PORTAL</small></span>
         </a>
         <div className="portal-header-tools">
           <a className="portal-official-link" href={siteLinks.maintenanceForm} target="_blank" rel="noreferrer">CURRENT FORM <FiArrowUpRight aria-hidden="true" /></a>
-          {staffRoute ? <button className="portal-home-link portal-button-link" type="button" onClick={signOut}>SIGN OUT</button> : <a className="portal-home-link" href="/maintenance-portal/staff">STAFF LOGIN</a>}
+          {staffRoute ? <button className="portal-home-link portal-button-link" type="button" onClick={signOut}>SIGN OUT</button> : <a className="portal-home-link" href={sitePath("/maintenance-portal/staff")}>STAFF LOGIN</a>}
         </div>
       </header>
 
@@ -441,8 +445,8 @@ function MaintenancePortalPage({ staffRoute = false }) {
           </div>
           {!staffRoute ? <div className="portal-switcher" role="tablist" aria-label="Maintenance portal view">
             <button type="button" role="tab" aria-selected={mode === "resident"} className="is-active"><FiHome aria-hidden="true" /> RESIDENT VIEW</button>
-            <a className="portal-switcher-link" href="/maintenance-portal/staff"><FiTool aria-hidden="true" /> STAFF LOGIN</a>
-          </div> : <div className="portal-switcher portal-switcher--staff"><span><FiTool aria-hidden="true" /> STAFF DASHBOARD</span><a href="/maintenance-portal">RESIDENT VIEW</a></div>}
+            <a className="portal-switcher-link" href={sitePath("/maintenance-portal/staff")}><FiTool aria-hidden="true" /> STAFF LOGIN</a>
+          </div> : <div className="portal-switcher portal-switcher--staff"><span><FiTool aria-hidden="true" /> STAFF DASHBOARD</span><a href={sitePath("/maintenance-portal")}>RESIDENT VIEW</a></div>}
         </div>
 
         {mode === "resident" ? (
@@ -486,13 +490,13 @@ function MaintenancePortalPage({ staffRoute = false }) {
               <div className="portal-side-intro"><p className="section-kicker">YOUR HOME, LOOKED AFTER</p><h2>ONE PLACE<br /><strong>TO KEEP TRACK.</strong></h2><p>Submit one request per issue. Add a photo when it helps our team understand what&apos;s happening.</p></div>
               <div className="portal-service-note"><FiBell aria-hidden="true" /><div><strong>For emergencies</strong><p>Call 911 for fire, gas odor, active flooding, or an immediate safety threat. Don&apos;t wait for an online reply.</p></div></div>
               <div className="portal-side-contact"><span>MAINTENANCE TEAM</span><a href="tel:7139743400">713-974-3400</a><small>MON–FRI · 8 AM–5 PM</small></div>
-              <div className="portal-request-preview"><div className="portal-section-label"><span>RECENT REQUESTS</span><a href="/maintenance-portal/staff">VIEW ALL <FiArrowUpRight aria-hidden="true" /></a></div>{requests.slice(0, 3).map((request) => <a className="portal-mini-request" href="/maintenance-portal/staff" key={request.id}><span><strong>{request.category}</strong><small>{request.id} · Unit {request.unit}</small></span><PortalStatus status={request.status} /></a>)}</div>
+              <div className="portal-request-preview"><div className="portal-section-label"><span>RECENT REQUESTS</span><a href={sitePath("/maintenance-portal/staff")}>VIEW ALL <FiArrowUpRight aria-hidden="true" /></a></div>{requests.slice(0, 3).map((request) => <a className="portal-mini-request" href={sitePath("/maintenance-portal/staff")} key={request.id}><span><strong>{request.category}</strong><small>{request.id} · Unit {request.unit}</small></span><PortalStatus status={request.status} /></a>)}</div>
             </aside>
           </div>
         ) : (
           <div className="portal-staff-layout">
             <section className="portal-dashboard" aria-labelledby="portal-dashboard-title">
-              <div className="portal-dashboard-heading"><div><p className="section-kicker">OPERATIONS OVERVIEW</p><h2 id="portal-dashboard-title">MAINTENANCE<br /><strong>QUEUE.</strong></h2></div><div className="portal-dashboard-actions"><button className="portal-manage-button" type="button" onClick={() => setShowAssigneeManager((value) => !value)}><FiUsers aria-hidden="true" /> {showAssigneeManager ? "CLOSE DIRECTORY" : "MANAGE ASSIGNEES"}</button><a className="portal-new-button" href="/maintenance-portal">NEW REQUEST <FiPlus aria-hidden="true" /></a></div></div>
+              <div className="portal-dashboard-heading"><div><p className="section-kicker">OPERATIONS OVERVIEW</p><h2 id="portal-dashboard-title">MAINTENANCE<br /><strong>QUEUE.</strong></h2></div><div className="portal-dashboard-actions"><button className="portal-manage-button" type="button" onClick={() => setShowAssigneeManager((value) => !value)}><FiUsers aria-hidden="true" /> {showAssigneeManager ? "CLOSE DIRECTORY" : "MANAGE ASSIGNEES"}</button><a className="portal-new-button" href={sitePath("/maintenance-portal")}>NEW REQUEST <FiPlus aria-hidden="true" /></a></div></div>
               <div className="portal-stats">{[["New", "NEW REQUESTS", FiFileText], ["In progress", "IN PROGRESS", FiClock], ["Scheduled", "SCHEDULED", FiBell], ["Resolved", "RESOLVED", FiCheckCircle]].map(([status, label, Icon]) => <button type="button" className={`portal-stat ${filter === status ? "is-active" : ""}`} key={status} onClick={() => setFilter(filter === status ? "All requests" : status)}><Icon aria-hidden="true" /><strong>{statusCounts[status]}</strong><span>{label}</span></button>)}</div>
               {showAssigneeManager && <section className="portal-assignee-manager" aria-labelledby="assignee-manager-title"><div className="portal-assignee-heading"><div><p className="section-kicker">PEOPLE & PARTNERS</p><h3 id="assignee-manager-title">WHO CAN<br /><strong>TAKE THE WORK?</strong></h3></div><p>Add the people, maintenance teams, and outside contractors who should appear in the assignment list. Select any card to view contact details and assigned work.</p></div><form className="portal-assignee-form" onSubmit={addAssignee}><label>NAME<input value={assigneeForm.name} onChange={(event) => setAssigneeForm((current) => ({ ...current, name: event.target.value }))} placeholder="e.g. Brightline Electric" required /></label><label>TYPE<select value={assigneeForm.type} onChange={(event) => setAssigneeForm((current) => ({ ...current, type: event.target.value }))}><option>Member</option><option>Team</option><option>Contractor</option></select></label><label>SPECIALTY<input value={assigneeForm.specialty} onChange={(event) => setAssigneeForm((current) => ({ ...current, specialty: event.target.value }))} placeholder="e.g. Electrical response" /></label><label>PHONE<input value={assigneeForm.phone} onChange={(event) => setAssigneeForm((current) => ({ ...current, phone: event.target.value }))} placeholder="Optional" /></label><label>EMAIL<input type="email" value={assigneeForm.email} onChange={(event) => setAssigneeForm((current) => ({ ...current, email: event.target.value }))} placeholder="Optional" /></label><button className="portal-add-assignee" type="submit"><FiPlus aria-hidden="true" /> ADD TO DIRECTORY</button></form>{assigneeMessage && <p className={`portal-assignee-message portal-assignee-message--${assigneeMessageType}`} role="status"><FiCheckCircle aria-hidden="true" /> {assigneeMessage}</p>}<div className="portal-assignee-list">{assignees.map((assignee) => <div className={`portal-assignee ${selectedAssignee?.id === assignee.id ? "is-selected" : ""}`} key={assignee.id}><button className="portal-assignee-select" type="button" onClick={() => setSelectedAssigneeId(assignee.id)} aria-label={`View details for ${assignee.name}`}><span className="portal-assignee-avatar">{assignee.name.slice(0, 1).toUpperCase()}</span><span className="portal-assignee-summary"><strong>{assignee.name}</strong><small>{assignee.specialty}</small></span><span className="portal-assignee-type">{assignee.type}</span><FiArrowUpRight aria-hidden="true" /></button><button className="portal-assignee-remove" type="button" onClick={() => removeAssignee(assignee)}><FiTrash2 aria-hidden="true" /><span className="sr-only">Remove {assignee.name}</span></button></div>)}</div>{selectedAssignee && <aside className="portal-assignee-detail" aria-labelledby="assignee-detail-title"><div className="portal-assignee-detail-heading"><div><span className="portal-assignee-detail-type">{selectedAssignee.type}</span><h4 id="assignee-detail-title">{selectedAssignee.name}</h4><p>{selectedAssignee.specialty}</p></div><button className="portal-assignee-detail-close" type="button" onClick={() => setSelectedAssigneeId(null)}>CLOSE <span aria-hidden="true">×</span></button></div><div className="portal-assignee-contact-grid">{selectedAssignee.phone ? <a href={`tel:${selectedAssignee.phone.replace(/[^0-9+]/g, "")}`}><FiPhone aria-hidden="true" /><span>PHONE</span><strong>{selectedAssignee.phone}</strong></a> : <div><FiPhone aria-hidden="true" /><span>PHONE</span><strong>Not provided</strong></div>}{selectedAssignee.email ? <a href={`mailto:${selectedAssignee.email}`}><FiMail aria-hidden="true" /><span>EMAIL</span><strong>{selectedAssignee.email}</strong></a> : <div><FiMail aria-hidden="true" /><span>EMAIL</span><strong>Not provided</strong></div>}<div><FiTool aria-hidden="true" /><span>WORK TYPE</span><strong>{selectedAssignee.specialty}</strong></div></div><div className="portal-assignee-work"><div className="portal-assignee-work-heading"><span>ASSIGNMENT HISTORY</span><strong>{selectedAssigneeRequests.length} total · {selectedAssigneeActiveRequests.length} active</strong></div>{selectedAssigneeRequests.length ? <div className="portal-assignee-work-list">{selectedAssigneeRequests.map((request) => <button className="portal-assignee-request" key={request.id} type="button" onClick={() => setSelectedRequestId(request.id)}><span><strong>{request.category}</strong><small>{request.id} · {request.resident} · Unit {request.unit}</small></span><PortalStatus status={request.status} /><FiArrowUpRight aria-hidden="true" /></button>)}</div> : <p className="portal-empty-note">No maintenance requests have been assigned to {selectedAssignee.name} yet.</p>}</div></aside>}</section>}
               <div className="portal-queue-toolbar"><div><span>REQUESTS</span><strong>{visibleRequests.length} total</strong></div><select value={filter} onChange={(event) => setFilter(event.target.value)} aria-label="Filter maintenance requests"><option>All requests</option>{portalStatusOptions.map((status) => <option key={status}>{status}</option>)}</select></div>
@@ -503,7 +507,7 @@ function MaintenancePortalPage({ staffRoute = false }) {
           </div>
         )}
       </main>
-      <footer className="portal-footer"><span>ICON @ PEAKWOOD · MAINTENANCE WORKFLOW PREVIEW</span><a href="/">BACK TO WEBSITE</a></footer>
+      <footer className="portal-footer"><span>ICON @ PEAKWOOD · MAINTENANCE WORKFLOW PREVIEW</span><a href={sitePath()}>BACK TO WEBSITE</a></footer>
     </div>
   );
 }
@@ -512,11 +516,11 @@ function MaintenancePage() {
   return (
     <div className="maintenance-page">
       <header className="maintenance-header">
-        <a className="maintenance-brand" href="/" aria-label="Back to Icon at Peakwood home">
-          <span className="maintenance-brand-mark"><img src="/assets/logo-mark.png" alt="Icon Peakwood" /></span>
+        <a className="maintenance-brand" href={sitePath()} aria-label="Back to Icon at Peakwood home">
+          <span className="maintenance-brand-mark"><img src={assetPath("/assets/logo-mark.png")} alt="Icon Peakwood" /></span>
           <span><strong>ICON @ PEAKWOOD</strong><small>RESIDENT MAINTENANCE</small></span>
         </a>
-        <a className="maintenance-back" href="/">BACK TO HOME</a>
+        <a className="maintenance-back" href={sitePath()}>BACK TO HOME</a>
       </header>
 
       <main>
@@ -525,7 +529,7 @@ function MaintenancePage() {
             <p className="section-kicker">RESIDENT SUPPORT</p>
             <h1>WHEN SOMETHING<br /><strong>NEEDS ATTENTION.</strong></h1>
             <p>Small issue or something more urgent, we can help point you in the right direction. Here are a few common maintenance requests residents submit.</p>
-            <a className="maintenance-primary-action" href="/maintenance-portal">OPEN MAINTENANCE PORTAL <FiArrowUpRight aria-hidden="true" /></a>
+            <a className="maintenance-primary-action" href={sitePath("/maintenance-portal")}>OPEN MAINTENANCE PORTAL <FiArrowUpRight aria-hidden="true" /></a>
             <a className="maintenance-secondary-action" href={siteLinks.maintenanceForm} target="_blank" rel="noreferrer">USE CURRENT OFFICIAL FORM <FiArrowUpRight aria-hidden="true" /></a>
           </div>
           <div className="maintenance-hero-side">
@@ -560,13 +564,13 @@ function MaintenancePage() {
           <p className="section-kicker">READY TO REPORT IT?</p>
           <h2>SUBMIT THE DETAILS.<br /><strong>WE&apos;LL TAKE IT FROM THERE.</strong></h2>
           <p>Use the official resident maintenance form to submit one request per issue and receive a tracking number after submission.</p>
-          <a className="maintenance-primary-action" href="/maintenance-portal">OPEN THE MAINTENANCE PORTAL <FiArrowUpRight aria-hidden="true" /></a>
+          <a className="maintenance-primary-action" href={sitePath("/maintenance-portal")}>OPEN THE MAINTENANCE PORTAL <FiArrowUpRight aria-hidden="true" /></a>
           <a className="maintenance-secondary-action maintenance-secondary-action--light" href={siteLinks.maintenanceForm} target="_blank" rel="noreferrer">OR USE THE CURRENT OFFICIAL FORM <FiArrowUpRight aria-hidden="true" /></a>
         </section>
       </main>
 
       <footer className="maintenance-footer">
-        <a className="maintenance-footer-brand" href="/">ICON @ PEAKWOOD</a>
+        <a className="maintenance-footer-brand" href={sitePath()}>ICON @ PEAKWOOD</a>
         <span>810 Peakwood Drive · Houston, TX 77090</span>
         <a href="tel:7139743400">713-974-3400</a>
       </footer>
@@ -579,14 +583,17 @@ export function App() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [activeOverlay, setActiveOverlay] = useState(null);
   const [floorPlanTab, setFloorPlanTab] = useState("studio");
-  const currentPath = window.location.pathname.replace(/\/+$/, "") || "/";
+  const basePath = baseUrl === "/" ? "" : new URL(baseUrl, window.location.origin).pathname.replace(/\/+$/, "");
+  const fallbackPath = new URLSearchParams(window.location.search).get("p");
+  const requestedPath = fallbackPath || window.location.pathname;
+  const currentPath = (requestedPath.startsWith(basePath) ? requestedPath.slice(basePath.length) : requestedPath).replace(/\/+$/, "") || "/";
   const isFloorPlansPage = currentPath === "/floor-plans";
   const isMaintenancePage = currentPath === "/maintenance";
   const isMaintenancePortalPage = currentPath === "/maintenance-portal";
   const isMaintenancePortalStaffPage = currentPath === "/maintenance-portal/staff";
   const pageNavItems = isFloorPlansPage
-    ? navItems.map((item) => item.label === "FLOOR PLANS" ? { ...item, href: "#floor-plans" } : item.href.startsWith("#") ? { ...item, href: `/${item.href}` } : item)
-    : navItems;
+    ? navItems.map((item) => item.label === "FLOOR PLANS" ? { ...item, href: "#floor-plans" } : item.href.startsWith("#") ? { ...item, href: `${sitePath()}${item.href}` } : { ...item, href: sitePath(item.href) })
+    : navItems.map((item) => item.href.startsWith("#") ? item : { ...item, href: sitePath(item.href) });
 
   useEffect(() => {
     const onKeyDown = (event) => {
@@ -617,9 +624,9 @@ export function App() {
       <header className="landing-header">
         <div className="header-backdrop" />
         <div className="header-inner">
-          <a className="brand-lockup" href="/" aria-label="Icon at Peakwood home">
-            <span className="brand-tile brand-tile--primary"><img src="/assets/logo-mark.png" alt="Icon Peakwood" /></span>
-            <span className="brand-tile brand-tile--secondary"><img src="/assets/community-logo.png" alt="Icon at Peakwood" /></span>
+          <a className="brand-lockup" href={sitePath()} aria-label="Icon at Peakwood home">
+            <span className="brand-tile brand-tile--primary"><img src={assetPath("/assets/logo-mark.png")} alt="Icon Peakwood" /></span>
+            <span className="brand-tile brand-tile--secondary"><img src={assetPath("/assets/community-logo.png")} alt="Icon at Peakwood" /></span>
           </a>
 
           <nav className={`landing-nav ${menuOpen ? "is-open" : ""}`} aria-label="Primary navigation">
@@ -628,7 +635,7 @@ export function App() {
 
           <a className="header-apply" href={siteLinks.apply}>APPLY NOW</a>
           <button className="menu-toggle" type="button" aria-label={menuOpen ? "Close menu" : "Open menu"} aria-expanded={menuOpen} onClick={() => setMenuOpen((value) => !value)}>
-            <img src={menuOpen ? "/assets/close.svg" : "/assets/menu.svg"} alt="" aria-hidden="true" />
+            <img src={menuOpen ? assetPath("/assets/close.svg") : assetPath("/assets/menu.svg")} alt="" aria-hidden="true" />
           </button>
         </div>
       </header>
@@ -653,7 +660,7 @@ export function App() {
             <h1>LIVE AT<br /><span>THE ICON</span></h1>
             <p className="hero-subtitle">STAY / CONNECT / LIVE</p>
             <p className="hero-description">Modern apartments. Unbeatable location.<br />A bold new way to live at Peakwood.</p>
-            <ActionLink href="/floor-plans">EXPLORE FLOOR PLANS</ActionLink>
+            <ActionLink href={sitePath("/floor-plans")}>EXPLORE FLOOR PLANS</ActionLink>
           </div>
         </section>
 
@@ -680,7 +687,7 @@ export function App() {
           {galleryItems.map((item) => {
             const content = <><img src={item.src} alt={item.alt} loading="lazy" /><span>{item.label}</span></>;
             if (item.action === "floor-plans") {
-              return <a className="photo-card" href="/floor-plans" key={item.src}>{content}</a>;
+              return <a className="photo-card" href={sitePath("/floor-plans")} key={item.src}>{content}</a>;
             }
             if (item.action === "amenities") {
               return <button className="photo-card" type="button" key={item.src} onClick={() => setActiveOverlay("amenities")}>{content}</button>;
@@ -710,7 +717,7 @@ export function App() {
           <div className="location-statement">
             <div className="location-statement-overlay" />
             <div className="location-statement-content">
-              <img src="/assets/logo-mark.png" alt="Icon Peakwood" />
+              <img src={assetPath("/assets/logo-mark.png")} alt="Icon Peakwood" />
               <p>Live bright.<br /><strong>Live Icon.</strong></p>
               <ActionLink href="#contact" tone="outline">SCHEDULE A TOUR</ActionLink>
             </div>
@@ -723,8 +730,8 @@ export function App() {
       <footer className="landing-footer" id="contact">
         <div className="footer-main">
           <div className="footer-brand footer-brand-lockup">
-            <span className="brand-tile brand-tile--primary"><img src="/assets/logo-mark.png" alt="Icon Peakwood" /></span>
-            <span className="brand-tile brand-tile--secondary"><img src="/assets/community-logo.png" alt="Icon at Peakwood" /></span>
+            <span className="brand-tile brand-tile--primary"><img src={assetPath("/assets/logo-mark.png")} alt="Icon Peakwood" /></span>
+            <span className="brand-tile brand-tile--secondary"><img src={assetPath("/assets/community-logo.png")} alt="Icon at Peakwood" /></span>
           </div>
           <div className="footer-column">
             <h2>LOCATION</h2>
@@ -736,7 +743,7 @@ export function App() {
           </div>
           <div className="footer-column">
             <h2>CONNECT</h2>
-            <p><a href={siteLinks.residentPortal} target="_blank" rel="noreferrer">Resident Portal</a><br /><a href="/maintenance-portal">Maintenance Requests</a><br /><a href="#contact">Contact Team</a></p>
+            <p><a href={siteLinks.residentPortal} target="_blank" rel="noreferrer">Resident Portal</a><br /><a href={sitePath("/maintenance-portal")}>Maintenance Requests</a><br /><a href="#contact">Contact Team</a></p>
           </div>
           <a className="footer-apply" href={siteLinks.apply}>APPLY NOW</a>
         </div>
@@ -748,7 +755,7 @@ export function App() {
 
       {selectedImage !== null && (
         <div className="lightbox" role="dialog" aria-modal="true" aria-label="Gallery image viewer" onClick={() => setSelectedImage(null)}>
-          <button className="lightbox-close" type="button" aria-label="Close image viewer" onClick={() => setSelectedImage(null)}><img src="/assets/close.svg" alt="" aria-hidden="true" /></button>
+          <button className="lightbox-close" type="button" aria-label="Close image viewer" onClick={() => setSelectedImage(null)}><img src={assetPath("/assets/close.svg")} alt="" aria-hidden="true" /></button>
           <img className="lightbox-image" src={galleryLibrary[selectedImage].src} alt={galleryLibrary[selectedImage].alt} onClick={(event) => event.stopPropagation()} />
         </div>
       )}
@@ -756,7 +763,7 @@ export function App() {
       {activeOverlay === "amenities" && (
         <div className="site-modal" role="dialog" aria-modal="true" aria-labelledby="amenities-modal-title" onClick={closeOverlay}>
           <div className="site-modal-panel amenities-modal" onClick={(event) => event.stopPropagation()}>
-            <button className="site-modal-close" type="button" aria-label="Close amenities" onClick={closeOverlay}><img src="/assets/close.svg" alt="" aria-hidden="true" /></button>
+            <button className="site-modal-close" type="button" aria-label="Close amenities" onClick={closeOverlay}><img src={assetPath("/assets/close.svg")} alt="" aria-hidden="true" /></button>
             <p className="section-kicker">LIVE WELL AT PEAKWOOD</p>
             <h2 id="amenities-modal-title">AMENITIES MADE<br /><strong>FOR MORE.</strong></h2>
             <p className="site-modal-intro">From morning workouts to easy evenings at home, Icon @ Peakwood brings comfort, connection, and convenience into every part of your day.</p>
@@ -776,7 +783,7 @@ export function App() {
       {activeOverlay === "gallery" && (
         <div className="site-modal" role="dialog" aria-modal="true" aria-labelledby="gallery-modal-title" onClick={closeOverlay}>
           <div className="site-modal-panel gallery-modal" onClick={(event) => event.stopPropagation()}>
-            <button className="site-modal-close" type="button" aria-label="Close image gallery" onClick={closeOverlay}><img src="/assets/close.svg" alt="" aria-hidden="true" /></button>
+            <button className="site-modal-close" type="button" aria-label="Close image gallery" onClick={closeOverlay}><img src={assetPath("/assets/close.svg")} alt="" aria-hidden="true" /></button>
             <p className="section-kicker">SEE THE DIFFERENCE</p>
             <h2 id="gallery-modal-title">THE ICON<br /><strong>GALLERY.</strong></h2>
             <p className="site-modal-intro">Explore the spaces, finishes, and shared moments that make Icon @ Peakwood feel like home.</p>
@@ -795,7 +802,7 @@ export function App() {
       {activeOverlay === "neighborhood" && (
         <div className="site-modal" role="dialog" aria-modal="true" aria-labelledby="neighborhood-modal-title" onClick={closeOverlay}>
           <div className="site-modal-panel neighborhood-modal" onClick={(event) => event.stopPropagation()}>
-            <button className="site-modal-close" type="button" aria-label="Close neighborhood guide" onClick={closeOverlay}><img src="/assets/close.svg" alt="" aria-hidden="true" /></button>
+            <button className="site-modal-close" type="button" aria-label="Close neighborhood guide" onClick={closeOverlay}><img src={assetPath("/assets/close.svg")} alt="" aria-hidden="true" /></button>
             <p className="section-kicker">THE NORTH HOUSTON GUIDE</p>
             <h2 id="neighborhood-modal-title">WHAT&apos;S CLOSE<br /><strong>TO HOME.</strong></h2>
             <p className="site-modal-intro">Icon @ Peakwood puts campus, healthcare, shopping, dining, and everyday essentials within easy reach. Select a destination to get directions.</p>
