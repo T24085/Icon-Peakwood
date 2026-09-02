@@ -365,6 +365,7 @@ function MaintenancePortalPage({ staffRoute = false }) {
   const [assigneeMessage, setAssigneeMessage] = useState("");
   const [assigneeMessageType, setAssigneeMessageType] = useState("success");
   const [submittedRequest, setSubmittedRequest] = useState(null);
+  const [isSubmittingRequest, setIsSubmittingRequest] = useState(false);
   const [dataSource, setDataSource] = useState("local");
   const [dataError, setDataError] = useState("");
   const [form, setForm] = useState({
@@ -427,6 +428,9 @@ function MaintenancePortalPage({ staffRoute = false }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (isSubmittingRequest) return;
+    setIsSubmittingRequest(true);
+    setDataError("");
     const request = {
       ...form,
       id: `IP-${Math.floor(2648 + Math.random() * 300)}`,
@@ -453,6 +457,8 @@ function MaintenancePortalPage({ staffRoute = false }) {
       setSubmittedRequest(request);
       setDataSource("local");
       setDataError("Local preview mode — this request is not shared with other users.");
+    } finally {
+      setIsSubmittingRequest(false);
     }
     setPhotoName("");
     setForm((current) => ({ ...current, description: "", customerNote: "" }));
@@ -580,9 +586,9 @@ function MaintenancePortalPage({ staffRoute = false }) {
                 <span className="portal-step">01 / 02</span>
               </div>
               {submittedRequest && (
-                <div className="portal-success" role="status">
+                <div className={`portal-success portal-success--strong portal-success--${dataSource}`} role="status" aria-live="assertive">
                   <FiCheckCircle aria-hidden="true" />
-                  <div><strong>Request {submittedRequest.id} is in the queue.</strong><span>We&apos;ll use the contact details below to keep you updated.</span></div>
+                  <div><span className="portal-success-kicker">{dataSource === "server" ? "REQUEST SENT" : "LOCAL PREVIEW REQUEST"}</span><strong>{dataSource === "server" ? `Request ${submittedRequest.id} was sent to the maintenance team.` : `Request ${submittedRequest.id} was created in this preview.`}</strong><span>{dataSource === "server" ? "Your details are in the shared maintenance queue." : "This preview request is not shared with other users."}</span></div>
                   <button type="button" onClick={() => setSubmittedRequest(null)} aria-label="Dismiss confirmation">×</button>
                 </div>
               )}
@@ -606,7 +612,7 @@ function MaintenancePortalPage({ staffRoute = false }) {
                 <label>DESCRIBE THE ISSUE<textarea value={form.description} onChange={(event) => updateForm("description", event.target.value)} placeholder="Tell us where it is, what happened, and anything that may help our team..." required /></label>
                 <label>ADDITIONAL NOTES FOR THE TEAM<textarea value={form.customerNote} onChange={(event) => updateForm("customerNote", event.target.value)} placeholder="Anything else we should know? For example: access details, timing, or what you have already tried." /></label>
                 <label className="portal-upload"> <span><FiCamera aria-hidden="true" /> ADD A PHOTO <small>{photoName || "Optional · JPG, PNG up to 10 MB"}</small></span><input type="file" accept="image/*" onChange={(event) => setPhotoName(event.target.files?.[0]?.name || "")} /><FiUpload aria-hidden="true" /></label>
-                <button className="portal-submit" type="submit">SUBMIT MAINTENANCE REQUEST <FiArrowUpRight aria-hidden="true" /></button>
+                <button className="portal-submit" type="submit" disabled={isSubmittingRequest}>{isSubmittingRequest ? "SENDING REQUEST..." : "SUBMIT MAINTENANCE REQUEST"} <FiArrowUpRight aria-hidden="true" /></button>
               </form>
             </section>
 

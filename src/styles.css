@@ -414,6 +414,15 @@ img { max-width: 100%; }
 .portal-success strong { font-size: 12px; }
 .portal-success span { font-size: 11px; color: #547056; }
 .portal-success button { margin-left: auto; border: 0; background: transparent; color: #547056; font-size: 20px; cursor: pointer; }
+.portal-success--strong { margin-top: 25px; padding: 18px 17px; border: 1px solid rgba(63,126,103,.38); border-left: 5px solid #3f8b72; background: #e5f5ed; box-shadow: 0 8px 22px rgba(63,126,103,.12); }
+.portal-success--strong > svg { width: 26px; height: 26px; color: #26715e; }
+.portal-success--strong strong { color: #174f43; font-size: 14px; line-height: 1.25; }
+.portal-success--strong .portal-success-kicker { color: #26715e; font-family: var(--label); font-size: 9px; letter-spacing: .14em; }
+.portal-success--strong > div > span:last-child { color: #487466; font-size: 11px; }
+.portal-success--local { border-color: rgba(156,78,69,.35); border-left-color: #9c4e45; background: #fff1ed; }
+.portal-success--local > svg, .portal-success--local .portal-success-kicker { color: #9c4e45; }
+.portal-success--local strong { color: #713d38; }
+.portal-success--local > div > span:last-child { color: #865c57; }
 .portal-form { margin-top: 32px; display: grid; gap: 21px; }
 .portal-form label, .portal-detail-fields label { display: grid; gap: 8px; color: #7d6940; font-family: var(--label); font-size: 9px; letter-spacing: .12em; }
 .portal-form input, .portal-form select, .portal-form textarea, .portal-detail-fields select, .portal-add-note input { width: 100%; border: 1px solid #cdd8d7; border-radius: 0; background: #f8fbfa; color: #213438; font-family: var(--sans); font-size: 13px; outline: 0; transition: border-color 160ms ease, background-color 160ms ease; }
@@ -437,6 +446,7 @@ img { max-width: 100%; }
 .portal-submit { width: 100%; }
 .portal-submit svg, .portal-new-button svg { width: 15px; height: 15px; }
 .portal-submit:hover, .portal-submit:focus-visible, .portal-new-button:hover, .portal-new-button:focus-visible { background: var(--blue-deep); transform: translateY(-2px); }
+.portal-submit:disabled { background: #789092; cursor: wait; transform: none; }
 .portal-resident-side { display: grid; gap: 13px; }
 .portal-side-intro { padding: 34px 31px 30px; background: #183840; color: var(--white); }
 .portal-side-intro .section-kicker { margin-bottom: 10px; color: var(--gold); }
