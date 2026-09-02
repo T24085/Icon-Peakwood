@@ -185,6 +185,23 @@ function hasStaffSession() {
   }
 }
 
+const isLocalPreview = ["localhost", "127.0.0.1", "terminal.local"].includes(window.location.hostname);
+
+async function apiJson(path, options = {}) {
+  const response = await fetch(path, {
+    credentials: "same-origin",
+    ...options,
+    headers: { "content-type": "application/json", ...(options.headers || {}) },
+  });
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const error = new Error(payload.error || `Request failed with status ${response.status}.`);
+    error.status = response.status;
+    throw error;
+  }
+  return payload;
+}
+
 function portalStatusClass(status) {
   return status.toLowerCase().replace(/\s+/g, "-");
 }
@@ -274,15 +291,26 @@ function StaffLoginPage({ onAuthenticated }) {
   const [email, setEmail] = useState("admin");
   const [password, setPassword] = useState("admin");
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleLogin = (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault();
-    if (email.trim().toLowerCase() !== "admin" || password !== "admin") {
-      setError("That demo account was not recognized. Check the username and password below.");
-      return;
+    setError("");
+    setIsSubmitting(true);
+    try {
+      await apiJson("/api/staff/login", { method: "POST", body: JSON.stringify({ username: email, password }) });
+      try { window.sessionStorage.setItem(portalSessionKey, "active"); } catch { /* Preview session only. */ }
+      onAuthenticated();
+    } catch (loginError) {
+      if (isLocalPreview && email.trim().toLowerCase() === "admin" && password === "admin") {
+        try { window.sessionStorage.setItem(portalSessionKey, "active"); } catch { /* Preview session only. */ }
+        onAuthenticated();
+      } else {
+        setError(loginError.status === 401 ? "That username or password was not recognized." : "The staff service is unavailable right now. Try again in a moment.");
+      }
+    } finally {
+      setIsSubmitting(false);
     }
-    try { window.sessionStorage.setItem(portalSessionKey, "active"); } catch { /* Preview session only. */ }
-    onAuthenticated();
   };
 
   return (
@@ -303,7 +331,7 @@ function StaffLoginPage({ onAuthenticated }) {
             <label>USERNAME<input type="text" value={email} onChange={(event) => setEmail(event.target.value)} required /></label>
             <label>PASSWORD<input type="password" value={password} onChange={(event) => setPassword(event.target.value)} required /></label>
             {error && <p className="portal-login-error" role="alert">{error}</p>}
-            <button className="portal-submit" type="submit">SIGN IN TO STAFF DASHBOARD <FiArrowUpRight aria-hidden="true" /></button>
+            <button className="portal-submit" type="submit" disabled={isSubmitting}>{isSubmitting ? "CHECKING ACCESS..." : "SIGN IN TO STAFF DASHBOARD"} <FiArrowUpRight aria-hidden="true" /></button>
           </form>
           <div className="portal-demo-credentials"><span>LOCAL PREVIEW ACCESS</span><strong>USERNAME · admin</strong><strong>PASSWORD · admin</strong></div>
         </section>
@@ -329,6 +357,8 @@ function MaintenancePortalPage({ staffRoute = false }) {
   const [assigneeMessage, setAssigneeMessage] = useState("");
   const [assigneeMessageType, setAssigneeMessageType] = useState("success");
   const [submittedRequest, setSubmittedRequest] = useState(null);
+  const [dataSource, setDataSource] = useState("local");
+  const [dataError, setDataError] = useState("");
   const [form, setForm] = useState({
     resident: "Jordan Lee",
     unit: "312",
@@ -342,12 +372,37 @@ function MaintenancePortalPage({ staffRoute = false }) {
   });
 
   useEffect(() => {
-    window.localStorage.setItem(portalStorageKey, JSON.stringify(requests));
-  }, [requests]);
+    if (!staffRoute || !staffAuthenticated) return undefined;
+    let cancelled = false;
+    Promise.all([apiJson("/api/maintenance/requests"), apiJson("/api/maintenance/assignees")])
+      .then(([remoteRequests, remoteAssignees]) => {
+        if (cancelled) return;
+        setRequests(remoteRequests);
+        setAssignees(remoteAssignees);
+        setDataSource("server");
+        setDataError("");
+      })
+      .catch((error) => {
+        if (cancelled) return;
+        if (error.status === 401) setStaffAuthenticated(false);
+        setDataSource("local");
+        setDataError(isLocalPreview ? "Local preview mode — shared database connects after deployment." : "The shared database could not be reached. No server changes were made.");
+      });
+    return () => { cancelled = true; };
+  }, [staffRoute, staffAuthenticated]);
 
   useEffect(() => {
-    window.localStorage.setItem(portalAssigneeStorageKey, JSON.stringify(assignees));
-  }, [assignees]);
+    if (!staffRoute || staffAuthenticated) return undefined;
+    let cancelled = false;
+    apiJson("/api/staff/session")
+      .then(() => {
+        if (cancelled) return;
+        try { window.sessionStorage.setItem(portalSessionKey, "active"); } catch { /* Session storage is optional. */ }
+        setStaffAuthenticated(true);
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [staffRoute, staffAuthenticated]);
 
   useEffect(() => {
     if (!selectedRequestId && requests[0]) setSelectedRequestId(requests[0].id);
@@ -361,7 +416,7 @@ function MaintenancePortalPage({ staffRoute = false }) {
 
   const updateForm = (field, value) => setForm((current) => ({ ...current, [field]: value }));
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const request = {
       ...form,
@@ -372,15 +427,38 @@ function MaintenancePortalPage({ staffRoute = false }) {
       notes: [],
       photoName,
     };
-    setRequests((current) => [request, ...current]);
-    setSelectedRequestId(request.id);
-    setSubmittedRequest(request);
+    try {
+      const savedRequest = await apiJson("/api/maintenance/requests", { method: "POST", body: JSON.stringify(request) });
+      setRequests((current) => [savedRequest, ...current]);
+      setSelectedRequestId(savedRequest.id);
+      setSubmittedRequest(savedRequest);
+      setDataSource("server");
+      setDataError("");
+    } catch (error) {
+      if (!isLocalPreview) {
+        setDataError("Your request could not be saved to the shared database. Please try again.");
+        return;
+      }
+      setRequests((current) => [request, ...current]);
+      setSelectedRequestId(request.id);
+      setSubmittedRequest(request);
+      setDataSource("local");
+      setDataError("Local preview mode — this request is not shared with other users.");
+    }
     setPhotoName("");
     setForm((current) => ({ ...current, description: "" }));
   };
 
-  const updateRequest = (id, patch) => {
+  const updateRequest = async (id, patch) => {
     setRequests((current) => current.map((request) => request.id === id ? { ...request, ...patch } : request));
+    try {
+      const savedRequest = await apiJson(`/api/maintenance/requests/${encodeURIComponent(id)}`, { method: "PATCH", body: JSON.stringify(patch) });
+      setRequests((current) => current.map((request) => request.id === id ? savedRequest : request));
+      setDataSource("server");
+      setDataError("");
+    } catch (error) {
+      if (!isLocalPreview) setDataError(error.status === 401 ? "Your staff session expired. Please sign in again." : "That update could not be saved to the shared database.");
+    }
   };
 
   const addNote = () => {
@@ -391,17 +469,31 @@ function MaintenancePortalPage({ staffRoute = false }) {
     setNote("");
   };
 
-  const addAssignee = (event) => {
+  const addAssignee = async (event) => {
     event.preventDefault();
     if (!assigneeForm.name.trim()) return;
     const assignee = { ...assigneeForm, id: `assignee-${Date.now()}`, name: assigneeForm.name.trim(), specialty: assigneeForm.specialty.trim() || "General maintenance", phone: assigneeForm.phone.trim(), email: assigneeForm.email.trim() };
-    setAssignees((current) => [...current, assignee]);
+    try {
+      const savedAssignee = await apiJson("/api/maintenance/assignees", { method: "POST", body: JSON.stringify(assignee) });
+      setAssignees((current) => [...current, savedAssignee]);
+      setDataSource("server");
+      setDataError("");
+    } catch (error) {
+      if (!isLocalPreview) {
+        setAssigneeMessageType("warning");
+        setAssigneeMessage(error.status === 401 ? "Your staff session expired. Please sign in again." : "That assignee could not be saved to the shared database.");
+        return;
+      }
+      setAssignees((current) => [...current, assignee]);
+      setDataSource("local");
+      setDataError("Local preview mode — this assignee is not shared with other users.");
+    }
     setAssigneeForm({ name: "", type: "Member", specialty: "", phone: "", email: "" });
     setAssigneeMessageType("success");
     setAssigneeMessage(`${assignee.name} is ready to receive assignments.`);
   };
 
-  const removeAssignee = (assignee) => {
+  const removeAssignee = async (assignee) => {
     const activeAssignments = requests.filter((request) => request.assignedTo === assignee.name && request.status !== "Resolved");
     if (activeAssignments.length) {
       setAssigneeMessageType("warning");
@@ -409,13 +501,28 @@ function MaintenancePortalPage({ staffRoute = false }) {
       return;
     }
     if (!window.confirm(`Remove ${assignee.name} from the assignee directory?`)) return;
-    setAssignees((current) => current.filter((item) => item.id !== assignee.id));
+    try {
+      await apiJson(`/api/maintenance/assignees/${encodeURIComponent(assignee.id)}`, { method: "DELETE" });
+      setAssignees((current) => current.filter((item) => item.id !== assignee.id));
+      setDataSource("server");
+      setDataError("");
+    } catch (error) {
+      if (!isLocalPreview) {
+        setAssigneeMessageType("warning");
+        setAssigneeMessage(error.status === 409 ? "Reassign active work before removing this person." : "That assignee could not be removed from the shared database.");
+        return;
+      }
+      setAssignees((current) => current.filter((item) => item.id !== assignee.id));
+      setDataSource("local");
+      setDataError("Local preview mode — this change is not shared with other users.");
+    }
     if (selectedAssigneeId === assignee.id) setSelectedAssigneeId(null);
     setAssigneeMessageType("success");
     setAssigneeMessage(`${assignee.name} was removed from the directory.`);
   };
 
-  const signOut = () => {
+  const signOut = async () => {
+    try { await apiJson("/api/staff/logout", { method: "POST", body: "{}" }); } catch { /* Local preview or an already-expired session. */ }
     try { window.sessionStorage.removeItem(portalSessionKey); } catch { /* Preview session only. */ }
     setStaffAuthenticated(false);
   };
@@ -448,6 +555,13 @@ function MaintenancePortalPage({ staffRoute = false }) {
             <a className="portal-switcher-link" href={sitePath("/maintenance-portal/staff")}><FiTool aria-hidden="true" /> STAFF LOGIN</a>
           </div> : <div className="portal-switcher portal-switcher--staff"><span><FiTool aria-hidden="true" /> STAFF DASHBOARD</span><a href={sitePath("/maintenance-portal")}>RESIDENT VIEW</a></div>}
         </div>
+
+        {(staffRoute || dataError) && (
+          <div className={`portal-data-status portal-data-status--${dataSource}`} role={dataError ? "alert" : "status"}>
+            <strong>{dataSource === "server" ? "SHARED DATABASE CONNECTED" : "LOCAL PREVIEW ONLY"}</strong>
+            <span>{dataError || "Requests, assignments, and notes are shared across staff users."}</span>
+          </div>
+        )}
 
         {mode === "resident" ? (
           <div className="portal-resident-layout">
