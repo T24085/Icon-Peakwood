@@ -53,8 +53,13 @@ start "" "http://localhost:%PORT%/maintenance-portal"
 
 if exist "%TUNNEL_CONFIG%" (
   if exist "%CLOUDFLARED%" (
-    echo Starting Cloudflare preview tunnel...
-    start "Icon Peakwood Cloudflare Tunnel" /min cmd /c ""%CLOUDFLARED%" --config "%TUNNEL_CONFIG%" tunnel run iconpeakwood"
+    powershell.exe -NoProfile -Command "$tunnel = Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object { $_.Name -eq 'cloudflared.exe' -and $_.CommandLine -like '*iconpeakwood.yml*' }; if ($tunnel) { exit 0 } else { exit 1 }"
+    if errorlevel 1 (
+      echo Starting Cloudflare preview tunnel...
+      start "Icon Peakwood Cloudflare Tunnel" /min cmd /c ""%CLOUDFLARED%" --config "%TUNNEL_CONFIG%" tunnel run iconpeakwood"
+    ) else (
+      echo The Icon Peakwood Cloudflare tunnel is already running.
+    )
     echo Public preview: https://%PUBLIC_HOST%/
     echo Maintenance portal: https://%PUBLIC_HOST%/maintenance-portal
   ) else (
