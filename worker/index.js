@@ -180,7 +180,7 @@ async function handleApi(request, env, url) {
     if (!fields.resident || !fields.unit || !fields.email || !fields.description) return json({ error: "Resident, unit, email, and description are required." }, { status: 400 });
     const id = `IP-${Date.now().toString().slice(-7)}`;
     const timestamp = now();
-    await env.DB.prepare("INSERT INTO maintenance_requests (id, resident, unit, email, phone, category, priority, status, submitted, description, entry, pet, assigned_to, notes_json, photo_name, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").bind(id, fields.resident, fields.unit, fields.email, fields.phone, fields.category, fields.priority, "New", "Just now", fields.description, fields.entry, fields.pet, "Unassigned", "[]", fields.photoName, timestamp, timestamp).run();
+    await env.DB.prepare("INSERT INTO maintenance_requests (id, resident, unit, email, phone, category, priority, status, submitted, description, entry, pet, assigned_to, notes_json, photo_name, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").bind(id, fields.resident, fields.unit, fields.email, fields.phone, fields.category, fields.priority, "New", "Just now", fields.description, fields.entry, fields.pet, "Unassigned", JSON.stringify(fields.notes), fields.photoName, timestamp, timestamp).run();
     const row = await env.DB.prepare("SELECT * FROM maintenance_requests WHERE id = ?").bind(id).first();
     return json(rowToRequest(row), { status: 201 });
   }

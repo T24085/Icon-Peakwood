@@ -377,6 +377,7 @@ function MaintenancePortalPage({ staffRoute = false }) {
     entry: "Yes, please",
     pet: "No",
     description: "",
+    customerNote: "",
   });
 
   useEffect(() => {
@@ -432,7 +433,7 @@ function MaintenancePortalPage({ staffRoute = false }) {
       status: "New",
       submitted: "Just now",
       assignedTo: "Unassigned",
-      notes: [],
+      notes: form.customerNote.trim() ? [{ author: form.resident.trim() || "Resident", text: form.customerNote.trim(), time: "Just now" }] : [],
       photoName,
     };
     try {
@@ -454,7 +455,7 @@ function MaintenancePortalPage({ staffRoute = false }) {
       setDataError("Local preview mode — this request is not shared with other users.");
     }
     setPhotoName("");
-    setForm((current) => ({ ...current, description: "" }));
+    setForm((current) => ({ ...current, description: "", customerNote: "" }));
   };
 
   const updateRequest = async (id, patch) => {
@@ -603,6 +604,7 @@ function MaintenancePortalPage({ staffRoute = false }) {
                 </div>
                 <fieldset className="portal-priority"><legend>HOW URGENT IS IT?</legend><div>{["Routine", "Urgent"].map((priority) => <button key={priority} type="button" className={form.priority === priority ? "is-active" : ""} onClick={() => updateForm("priority", priority)}>{priority === "Urgent" ? "NEEDS ATTENTION SOON" : "CAN WAIT FOR A VISIT"}</button>)}</div></fieldset>
                 <label>DESCRIBE THE ISSUE<textarea value={form.description} onChange={(event) => updateForm("description", event.target.value)} placeholder="Tell us where it is, what happened, and anything that may help our team..." required /></label>
+                <label>ADDITIONAL NOTES FOR THE TEAM<textarea value={form.customerNote} onChange={(event) => updateForm("customerNote", event.target.value)} placeholder="Anything else we should know? For example: access details, timing, or what you have already tried." /></label>
                 <label className="portal-upload"> <span><FiCamera aria-hidden="true" /> ADD A PHOTO <small>{photoName || "Optional · JPG, PNG up to 10 MB"}</small></span><input type="file" accept="image/*" onChange={(event) => setPhotoName(event.target.files?.[0]?.name || "")} /><FiUpload aria-hidden="true" /></label>
                 <button className="portal-submit" type="submit">SUBMIT MAINTENANCE REQUEST <FiArrowUpRight aria-hidden="true" /></button>
               </form>
