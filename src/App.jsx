@@ -770,7 +770,7 @@ export function App() {
   const isMaintenancePage = currentPath === "/maintenance";
   const isMaintenancePortalPage = currentPath === "/maintenance-portal";
   const isMaintenancePortalStaffPage = currentPath === "/maintenance-portal/staff";
-  const shouldShowIntro = !isMaintenancePage && !isMaintenancePortalPage && !isMaintenancePortalStaffPage;
+  const shouldShowIntro = currentPath === "/";
   const [showIntro, setShowIntro] = useState(shouldShowIntro);
   const pageNavItems = isFloorPlansPage
     ? navItems.map((item) => item.label === "FLOOR PLANS" ? { ...item, href: "#floor-plans" } : item.href.startsWith("#") ? { ...item, href: `${sitePath()}${item.href}` } : { ...item, href: sitePath(item.href) })
