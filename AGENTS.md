@@ -13,5 +13,6 @@ When implementing from a selected generated mock, treat that image as the source
 - The first-load experience on the root homepage uses a short, skippable “The Icon” cursive intro with orbiting light, a blue/gold swoop, and a fast reveal; inner routes such as Floor Plans must open immediately without replaying it.
 - Page entrance animations wait for the intro to finish so the hero/header reveal is visible instead of completing underneath the loading overlay.
 - Primary navigation hover states use a compact outlined-square corner treatment, with a translucent blue fill and slight lift instead of a flat highlight.
+- Floor-plan tab changes must re-register newly rendered cards with the scroll-reveal observer so Studio, 1 Bedroom, and 2 Bedroom layouts never remain hidden.
 
 Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts/prepare-sites-build.mjs`, and `tests/sites-worker.test.mjs` intact so the same local prototype can be handed to Sites. Before a Sites handoff, run `npm run build` and `npm run test:sites`; the build must leave `dist/client/index.html`, `dist/server/index.js`, and `dist/.openai/hosting.json`.

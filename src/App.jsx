@@ -817,7 +817,7 @@ export function App() {
       observer.disconnect();
       document.documentElement.classList.remove("motion-ready");
     };
-  }, [isFloorPlansPage, showIntro]);
+  }, [isFloorPlansPage, showIntro, floorPlanTab]);
 
   const closeMenu = () => setMenuOpen(false);
   const closeOverlay = () => setActiveOverlay(null);
