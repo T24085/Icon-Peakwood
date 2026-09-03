@@ -283,8 +283,8 @@ function FloorPlansContent({ floorPlanTab, setFloorPlanTab }) {
         ))}
       </div>
       <div className="floor-plan-grid" id="floor-plan-grid">
-        {activeGroup.plans.map(([unit, src]) => (
-          <a className="floor-plan-card" href={src} target="_blank" rel="noreferrer" key={unit}>
+        {activeGroup.plans.map(([unit, src], index) => (
+          <a className="floor-plan-card motion-reveal" style={{ "--reveal-delay": `${index * 75}ms` }} href={src} target="_blank" rel="noreferrer" key={unit}>
             <span className="floor-plan-card-title">{unit}</span>
             <img src={src} alt={`${unit} apartment floor plan`} loading="lazy" />
             <span className="floor-plan-card-link">VIEW DETAILS <span aria-hidden="true">↗</span></span>
@@ -742,6 +742,30 @@ export function App() {
     return () => document.body.classList.remove("is-locked");
   }, [selectedImage, activeOverlay]);
 
+  useEffect(() => {
+    const revealItems = [...document.querySelectorAll(".motion-reveal")];
+    document.documentElement.classList.add("motion-ready");
+
+    if (!window.IntersectionObserver) {
+      revealItems.forEach((item) => item.classList.add("is-visible"));
+      return () => document.documentElement.classList.remove("motion-ready");
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.16, rootMargin: "0px 0px -6%" });
+
+    revealItems.forEach((item) => observer.observe(item));
+    return () => {
+      observer.disconnect();
+      document.documentElement.classList.remove("motion-ready");
+    };
+  }, [isFloorPlansPage]);
+
   const closeMenu = () => setMenuOpen(false);
   const closeOverlay = () => setActiveOverlay(null);
 
@@ -772,7 +796,7 @@ export function App() {
 
       {isFloorPlansPage ? (
         <main className="floor-plans-page">
-          <section className="floor-plans-page-hero">
+          <section className="floor-plans-page-hero hero-arrival">
             <div className="floor-plans-page-hero-copy">
               <p className="hero-kicker">THE ICON @ PEAKWOOD</p>
               <h1>FLOOR PLANS<br /><span>MADE FOR YOU.</span></h1>
@@ -783,7 +807,7 @@ export function App() {
         </main>
       ) : (
       <main>
-        <section className="mockup-hero" id="home">
+        <section className="mockup-hero hero-arrival" id="home">
           <div className="hero-image" />
           <div className="hero-copy">
             <p className="hero-kicker">NORTH HOUSTON&apos;S NEWEST ADDRESS</p>
@@ -796,7 +820,7 @@ export function App() {
 
         <section className="feature-rail" aria-label="Community highlights">
           {featureItems.map(([top, bottom], index) => (
-            <div className="feature-item" key={top}>
+            <div className="feature-item motion-reveal" style={{ "--reveal-delay": `${index * 75}ms` }} key={top}>
               {(() => { const Icon = featureIcons[index]; return <Icon className="feature-icon" aria-hidden="true" />; })()}
               <p>{top}<br />{bottom}</p>
             </div>
@@ -804,8 +828,8 @@ export function App() {
         </section>
 
         <section className="split-story" id="amenities">
-          <div className="story-image story-image--pool" />
-          <div className="story-copy">
+          <div className="story-image story-image--pool motion-reveal motion-reveal--image" />
+          <div className="story-copy motion-reveal motion-reveal--right">
             <p className="section-kicker">A COMMUNITY MADE FOR MORE</p>
             <h2>MORE THAN<br /><strong>AN APARTMENT.</strong></h2>
             <p>Make yourself at home in a place designed for connection, comfort, and momentum. Icon @ Peakwood brings elevated finishes, amenity spaces, and North Houston energy together.</p>
@@ -814,26 +838,26 @@ export function App() {
         </section>
 
         <section className="photo-grid" id="gallery" aria-label="Icon at Peakwood gallery">
-          {galleryItems.map((item) => {
+          {galleryItems.map((item, index) => {
             const content = <><img src={item.src} alt={item.alt} loading="lazy" /><span>{item.label}</span></>;
             if (item.action === "floor-plans") {
-              return <a className="photo-card" href={sitePath("/floor-plans")} key={item.src}>{content}</a>;
+              return <a className="photo-card motion-reveal" style={{ "--reveal-delay": `${index * 80}ms` }} href={sitePath("/floor-plans")} key={item.src}>{content}</a>;
             }
             if (item.action === "amenities") {
-              return <button className="photo-card" type="button" key={item.src} onClick={() => setActiveOverlay("amenities")}>{content}</button>;
+              return <button className="photo-card motion-reveal" style={{ "--reveal-delay": `${index * 80}ms` }} type="button" key={item.src} onClick={() => setActiveOverlay("amenities")}>{content}</button>;
             }
             if (item.action === "gallery") {
-              return <button className="photo-card" type="button" key={item.src} onClick={() => setActiveOverlay("gallery")}>{content}</button>;
+              return <button className="photo-card motion-reveal" style={{ "--reveal-delay": `${index * 80}ms` }} type="button" key={item.src} onClick={() => setActiveOverlay("gallery")}>{content}</button>;
             }
             if (item.action === "neighborhood") {
-              return <button className="photo-card" type="button" key={item.src} onClick={() => setActiveOverlay("neighborhood")}>{content}</button>;
+              return <button className="photo-card motion-reveal" style={{ "--reveal-delay": `${index * 80}ms` }} type="button" key={item.src} onClick={() => setActiveOverlay("neighborhood")}>{content}</button>;
             }
-            return <button className="photo-card" type="button" key={item.src} onClick={() => setSelectedImage(galleryLibrary.findIndex((image) => image.src === item.src))}>{content}</button>;
+            return <button className="photo-card motion-reveal" style={{ "--reveal-delay": `${index * 80}ms` }} type="button" key={item.src} onClick={() => setSelectedImage(galleryLibrary.findIndex((image) => image.src === item.src))}>{content}</button>;
           })}
         </section>
 
         <section className="location-band" id="neighborhood">
-          <div className="location-card">
+          <div className="location-card motion-reveal">
             <div className="location-image" />
             <div className="location-overlay" />
             <div className="location-copy">
@@ -843,8 +867,8 @@ export function App() {
               <div className="location-actions"><ActionLink href={siteLinks.map} tone="outline">VIEW ON MAP</ActionLink><button className="action action--outline location-nearby-trigger" type="button" onClick={() => setActiveOverlay("neighborhood")}>WHAT&apos;S NEARBY <FiArrowUpRight aria-hidden="true" /></button></div>
             </div>
           </div>
-          <div className="location-lounge" />
-          <div className="location-statement">
+          <div className="location-lounge motion-reveal" style={{ "--reveal-delay": "90ms" }} />
+          <div className="location-statement motion-reveal" style={{ "--reveal-delay": "180ms" }}>
             <div className="location-statement-overlay" />
             <div className="location-statement-content">
               <img src={assetPath("/assets/logo-mark.png")} alt="Icon Peakwood" />
@@ -857,7 +881,7 @@ export function App() {
       </main>
       )}
 
-      <footer className="landing-footer" id="contact">
+      <footer className="landing-footer motion-reveal" id="contact">
         <div className="footer-main">
           <div className="footer-brand footer-brand-lockup">
             <span className="brand-tile brand-tile--primary"><img src={assetPath("/assets/logo-mark.png")} alt="Icon Peakwood" /></span>
