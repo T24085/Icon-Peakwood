@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FiArrowUpRight, FiBell, FiCamera, FiCheckCircle, FiClock, FiFileText, FiHome, FiMail, FiMapPin, FiMessageSquare, FiPhone, FiPlus, FiShield, FiSun, FiTool, FiTrash2, FiUpload, FiUsers } from "react-icons/fi";
 
 const baseUrl = import.meta.env.BASE_URL;
@@ -253,6 +253,55 @@ const floorPlanGroups = [
 
 function ActionLink({ children, href = "#contact", tone = "blue", target, onClick }) {
   return <a className={`action action--${tone}`} href={href} target={target} onClick={onClick} rel={target === "_blank" ? "noreferrer" : undefined}>{children}</a>;
+}
+
+function IconIntro({ onFinished }) {
+  const [phase, setPhase] = useState("enter");
+  const finishedRef = useRef(false);
+
+  useEffect(() => {
+    const exitTimer = window.setTimeout(() => setPhase("exit"), 2350);
+    const finishTimer = window.setTimeout(() => {
+      finishedRef.current = true;
+      onFinished();
+    }, 3000);
+    return () => {
+      window.clearTimeout(exitTimer);
+      window.clearTimeout(finishTimer);
+    };
+  }, [onFinished]);
+
+  const skipIntro = () => {
+    if (finishedRef.current) return;
+    setPhase("exit");
+    window.setTimeout(() => {
+      if (!finishedRef.current) {
+        finishedRef.current = true;
+        onFinished();
+      }
+    }, 500);
+  };
+
+  return (
+    <div className={`icon-intro icon-intro--${phase}`} role="status" aria-live="polite">
+      <div className="icon-intro__field" aria-hidden="true">
+        <span className="icon-intro__flare icon-intro__flare--one" />
+        <span className="icon-intro__flare icon-intro__flare--two" />
+        <span className="icon-intro__orbit icon-intro__orbit--one" />
+        <span className="icon-intro__orbit icon-intro__orbit--two" />
+      </div>
+      <div className="icon-intro__content">
+        <p className="icon-intro__eyebrow">WELCOME TO</p>
+        <div className="icon-intro__wordmark" aria-label="The Icon">
+          <span className="icon-intro__the">The</span>
+          <span className="icon-intro__icon">Icon</span>
+          <span className="icon-intro__swoop" />
+        </div>
+        <div className="icon-intro__rule"><span>PEAKWOOD / NORTH HOUSTON</span><i /></div>
+      </div>
+      <button className="icon-intro__skip" type="button" onClick={skipIntro}>SKIP INTRO <span aria-hidden="true">↗</span></button>
+    </div>
+  );
 }
 
 function FloorPlansContent({ floorPlanTab, setFloorPlanTab }) {
@@ -721,6 +770,8 @@ export function App() {
   const isMaintenancePage = currentPath === "/maintenance";
   const isMaintenancePortalPage = currentPath === "/maintenance-portal";
   const isMaintenancePortalStaffPage = currentPath === "/maintenance-portal/staff";
+  const shouldShowIntro = !isMaintenancePage && !isMaintenancePortalPage && !isMaintenancePortalStaffPage;
+  const [showIntro, setShowIntro] = useState(shouldShowIntro);
   const pageNavItems = isFloorPlansPage
     ? navItems.map((item) => item.label === "FLOOR PLANS" ? { ...item, href: "#floor-plans" } : item.href.startsWith("#") ? { ...item, href: `${sitePath()}${item.href}` } : { ...item, href: sitePath(item.href) })
     : navItems.map((item) => item.href.startsWith("#") ? item : { ...item, href: sitePath(item.href) });
@@ -774,7 +825,9 @@ export function App() {
   if (isMaintenancePortalPage) return <MaintenancePortalPage />;
 
   return (
-    <div className="landing-shell">
+    <>
+      {showIntro && <IconIntro onFinished={() => setShowIntro(false)} />}
+      <div className="landing-shell">
       <header className="landing-header">
         <div className="header-backdrop" />
         <div className="header-inner">
@@ -965,6 +1018,7 @@ export function App() {
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 }
