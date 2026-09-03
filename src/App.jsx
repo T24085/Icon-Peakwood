@@ -770,7 +770,8 @@ export function App() {
   const isMaintenancePage = currentPath === "/maintenance";
   const isMaintenancePortalPage = currentPath === "/maintenance-portal";
   const isMaintenancePortalStaffPage = currentPath === "/maintenance-portal/staff";
-  const shouldShowIntro = currentPath === "/";
+  const prefersReducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  const shouldShowIntro = currentPath === "/" && !prefersReducedMotion;
   const [showIntro, setShowIntro] = useState(shouldShowIntro);
   const pageNavItems = isFloorPlansPage
     ? navItems.map((item) => item.label === "FLOOR PLANS" ? { ...item, href: "#floor-plans" } : item.href.startsWith("#") ? { ...item, href: `${sitePath()}${item.href}` } : { ...item, href: sitePath(item.href) })
@@ -794,6 +795,7 @@ export function App() {
   }, [selectedImage, activeOverlay]);
 
   useEffect(() => {
+    if (showIntro) return undefined;
     const revealItems = [...document.querySelectorAll(".motion-reveal")];
     document.documentElement.classList.add("motion-ready");
 
@@ -815,7 +817,7 @@ export function App() {
       observer.disconnect();
       document.documentElement.classList.remove("motion-ready");
     };
-  }, [isFloorPlansPage]);
+  }, [isFloorPlansPage, showIntro]);
 
   const closeMenu = () => setMenuOpen(false);
   const closeOverlay = () => setActiveOverlay(null);
@@ -827,7 +829,7 @@ export function App() {
   return (
     <>
       {showIntro && <IconIntro onFinished={() => setShowIntro(false)} />}
-      <div className="landing-shell">
+      <div className={`landing-shell ${showIntro ? "intro-active" : "intro-complete"}`}>
       <header className="landing-header">
         <div className="header-backdrop" />
         <div className="header-inner">
